@@ -14,7 +14,6 @@ public class MemberController {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/Green", "green", "mysql");
-            statement = connection.createStatement();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -37,7 +36,7 @@ public class MemberController {
     public ArrayList<MemberModel> selectMember() {
         ArrayList<MemberModel> memberModels = new ArrayList<>();
         try {
-
+            statement = connection.createStatement();
             ResultSet resultset = statement.executeQuery("SELECT * FROM green.member");
 
             while (resultset.next()) {
@@ -45,35 +44,62 @@ public class MemberController {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return memberModels;
     }
 
     public void updateMember(String name, String birthday, String tel) {
         try {
+            statement = connection.createStatement();
             statement.executeUpdate("UPDATE green.member SET tel = '" + tel + "', birthday = '" + birthday + "' WHERE name = '" + name + "';");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void deleteMember(String name) {
         try {
+            statement = connection.createStatement();
             statement.executeUpdate("DELETE FROM green.member WHERE name = '" + name + "';");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public ArrayList<MemberModel> searchMember(String content) {
         ArrayList<MemberModel> memberModels = new ArrayList<>();
-        try{
+        try {
+            statement = connection.createStatement();
             ResultSet resultset = statement.executeQuery("SELECT * FROM green.member WHERE name like '%" + content + "%';");
             while (resultset.next()) {
                 memberModels.add(new MemberModel(resultset.getString(1), resultset.getString(2), resultset.getString(3)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return memberModels;
     }
