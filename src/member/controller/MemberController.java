@@ -22,7 +22,13 @@ public class MemberController {
 
     public void insertMember(MemberModel model) {
         try {
-            statement.executeUpdate("INSERT INTO green.member VALUES ('"+ model.getName() + "', '" + model.getBirthday() + "', '" + model.getTel() + "');");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO green.member VALUES(?,?,?)");
+            preparedStatement.setString(1, model.getName());
+            preparedStatement.setString(2, model.getBirthday());
+            preparedStatement.setString(3, model.getTel());
+
+            preparedStatement.executeUpdate();
+//            statement.executeUpdate("INSERT INTO green.member VALUES ('"+ model.getName() + "', '" + model.getBirthday() + "', '" + model.getTel() + "');");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -31,6 +37,7 @@ public class MemberController {
     public ArrayList<MemberModel> selectMember() {
         ArrayList<MemberModel> memberModels = new ArrayList<>();
         try {
+
             ResultSet resultset = statement.executeQuery("SELECT * FROM green.member");
 
             while (resultset.next()) {
